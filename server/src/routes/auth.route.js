@@ -1,5 +1,5 @@
 import express from "express";
-import trimRequest from 'trim-request'
+import { all as trimAll } from "trim-request";
 import {
   login,
   logout,
@@ -9,11 +9,11 @@ import {
 import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
-router.route("/register").post(trimRequest.all, register);
-router.route("/login").post(trimRequest.all, login);
-router.route("/logout").post(trimRequest.all, logout);
-router.route("/refreshtoken").post(trimRequest.all, refreshToken);
-router.route('/test-middleware').get(trimRequest.all, authMiddleware, (req, res) => {
-  res.send(req.user)
-})
+router.route("/register").post(trimAll, register);
+router.route("/login").post(trimAll, login);
+router.route("/logout").post(trimAll, logout);
+router.route("/refreshtoken").post(trimAll, refreshToken);
+router.route("/test-middleware").get(trimAll, authMiddleware, (req, res) => {
+  res.send(req.user);
+});
 export default router;

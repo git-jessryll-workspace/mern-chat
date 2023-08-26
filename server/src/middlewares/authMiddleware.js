@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import jwt from "jsonwebtoken";
+import { verifyMiddleware } from "../utils/token.util.js";
 
 export default async function (req, res, next) {
   if (!req.headers["authorization"])
@@ -9,11 +9,6 @@ export default async function (req, res, next) {
 
   const token = bearerToken.split(" ")[1];
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, payload) => {
-    if (error) {
-      next(createHttpError.Unauthorized())
-    }
-    req.user = payload;
-    next();
-  });
+  verifyMiddleware(token, req, next);
+  
 }

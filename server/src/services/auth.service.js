@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
-import validator from "validator";
-import bcrypt from 'bcrypt'
+import { compare } from "bcrypt";
+import isEmail from "validator/lib/isEmail.js";
+import isLength from "validator/lib/isLength.js";
 import { UserModel } from "../models/index.js";
 import {
   DEFAULT_PROFILE_IMAGE,
@@ -15,7 +16,7 @@ export const createUser = async (userData) => {
   }
 
   if (
-    !validator.isLength(name, {
+    !isLength(name, {
       min: 2,
     })
   ) {
@@ -32,7 +33,7 @@ export const createUser = async (userData) => {
     }
   }
 
-  if (!validator.isEmail(email)) {
+  if (!isEmail(email)) {
     throw createHttpError.BadRequest(
       "Please make sure to provide a valid email address."
     );
@@ -47,7 +48,7 @@ export const createUser = async (userData) => {
   }
 
   if (
-    !validator.isLength(password, {
+    !isLength(password, {
       min: 6,
       max: 128,
     })
@@ -69,14 +70,14 @@ export const createUser = async (userData) => {
 
 export const signUser = async (email, password) => {
   const user = await UserModel.findOne({ email: email.toLowerCase() }).lean();
-  
+
   // check if user exist
-  if (!user) throw createHttpError.NotFound('Invalid credentials')
+  if (!user) throw createHttpError.NotFound("Invalid credentials");
 
   // compare passwords
-  let passwordMatches = await bcrypt.compare(password, user.password);
+  let passwordMatches = await compare(password, user.password);
 
-  if (!passwordMatches) throw createHttpError.NotFound("Invalid credentials")
+  if (!passwordMatches) throw createHttpError.NotFound("Invalid credentials");
 
   return user;
 };

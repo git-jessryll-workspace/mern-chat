@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 import { createUser, signUser } from "../services/auth.service.js";
-import { generateToken, verifyToken } from "../services/token.service.js";
+import { verifyToken, getToken } from "../services/token.service.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -13,20 +13,8 @@ export const register = async (req, res, next) => {
       status,
       password,
     });
-    const access_token = await generateToken(
-      {
-        userId: newUser._id,
-      },
-      "30d",
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    const refresh_token = await await generateToken(
-      {
-        userId: newUser._id,
-      },
-      "30d",
-      process.env.REFRESH_TOKEN_SECRET
-    );
+
+    const { access_token, refresh_token } = await getToken(newUser._id);
 
     res.cookie("refreshtoken", refresh_token, {
       httpOnly: true,
@@ -48,20 +36,7 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await signUser(email, password);
 
-    const access_token = await generateToken(
-      {
-        userId: user._id,
-      },
-      "30d",
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    const refresh_token = await await generateToken(
-      {
-        userId: user._id,
-      },
-      "30d",
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    const { access_token, refresh_token } = await getToken(user._id);
 
     res.cookie("refreshtoken", refresh_token, {
       httpOnly: true,
