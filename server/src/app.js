@@ -43,23 +43,26 @@ app.use(fileUpload({
 }))
 
 // cors middleware
-app.use(cors({
-    origin: 'http://localhost:3000'
-}));
+const corsConfig = cors()
+app.use(corsConfig);
 
 app.use('/api/v1', routes);
 
 app.use(async(req, res, next) => {
     next(createHttpError.NotFound("This route does not exist."))
 })
-app.use(async (error, req, res, next) => {
-    res.status(error.status || 500);
+
+const errorHandler = async (err, req, res, next) => {
+    const errorStatus = err.status || 500;
+    res.status(errorStatus);
     res.send({
         error: {
-            status: error.status || 500,
-            message: error.message
+            status: errorStatus,
+            message: err.message
         }
     })
-})
+}
+
+app.use(errorHandler)
 
 export default app;

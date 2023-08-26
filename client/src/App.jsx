@@ -1,14 +1,31 @@
-import { useState } from 'react'
-import './App.css'
+import "./App.css";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import Home from "./pages/home"
+import Login from "./pages/login"
+import Register from "./pages/register"
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "./features/userSlice";
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const dispatch = useDispatch();
+  const {user} = useSelector(state => (state.user));
+  console.log(user)
   return (
-    <div className='dark'>
-     
+    <div className="dark">
+      <button onClick={() => dispatch(logout())}>
+        Logout
+      </button>
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<Home/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/register' element={<Register/>}/>
+        </Routes>
+      </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
