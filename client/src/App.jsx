@@ -11,7 +11,7 @@ import { logout } from "./features/userSlice";
 function App() {
   const dispatch = useDispatch();
   const {user} = useSelector(state => (state.user));
-  
+  console.log(user)
   return (
     <div className="dark">
       <Router>

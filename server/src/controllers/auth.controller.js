@@ -1,6 +1,11 @@
 import createHttpError from "http-errors";
 import { createUser, signUser } from "../services/auth.service.js";
-import { verifyToken, getToken } from "../services/token.service.js";
+import {
+  verifyToken,
+  getToken,
+  generateToken,
+} from "../services/token.service.js";
+import { findUser } from "../services/user.service.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -23,8 +28,14 @@ export const register = async (req, res, next) => {
     });
     res.json({
       message: "register success",
-      access_token,
-      user: newUser,
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        picture: newUser.picture,
+        status: newUser.status,
+        access_token,
+      },
     });
   } catch (error) {
     next(error);
@@ -45,8 +56,14 @@ export const login = async (req, res, next) => {
     });
     res.json({
       message: "login success",
-      access_token,
-      user,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        status: user.status,
+        access_token,
+      },
     });
   } catch (error) {
     next(error);
@@ -75,7 +92,24 @@ export const refreshToken = async (req, res, next) => {
       refresh_token,
       process.env.REFRESH_TOKEN_SECRET
     );
-    res.send(check);
+    const user = await findUser(check.userId);
+    const access_token = await generateToken(
+      {
+        userId: user._id,
+      },
+      "1d",
+      process.env.ACCESS_TOKEN_SECRET
+    );
+    res.json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        status: user.status,
+        access_token,
+      },
+    });
   } catch (error) {
     next(error);
   }

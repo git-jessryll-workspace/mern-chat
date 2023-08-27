@@ -2,11 +2,15 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpSchema } from "../../utils/validation";
 import AuthInput from "./AuthInput";
-import { useSelector } from "react-redux";
-import { PulseLoader } from "react-spinner";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import PulseLoader from "react-spinners/PulseLoader";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../../features/userSlice";
 export default function RegistrationForm() {
-  const { status } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { status, error } = useSelector((state) => state.user);
+
   const {
     register,
     handleSubmit,
@@ -16,7 +20,11 @@ export default function RegistrationForm() {
     resolver: yupResolver(signUpSchema),
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    await setTimeout(() => {}, 4000);
+    let res = await dispatch(registerUser({ ...data, picture: "" }));
+    if (res.payload.user) navigate("/");
+  };
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
@@ -57,12 +65,17 @@ export default function RegistrationForm() {
             register={register}
             error={errors?.password?.message}
           />
+          {error && (
+            <div>
+              <p className="text-red-400">{error}</p>
+            </div>
+          )}
           <button
             className="w-full flex justify-center bg-green_1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green_2 shadow-lg cursor-pointer transition ease-in duration-300"
             type="submit"
           >
-            {status === "loading" ? (
-              <PulseLoader color="#fff" size={16} />
+            {status !== "loading" ? (
+              <PulseLoader color="#fff" size={12} />
             ) : (
               "Sign up"
             )}
