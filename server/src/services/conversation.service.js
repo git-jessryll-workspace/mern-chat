@@ -73,3 +73,11 @@ export const getUserConversations = async (user_id) => {
     });
   return conversations;
 };
+
+export const updateLatestMessage = async (convo_id, msg) => {
+  const updatedConvo = await ConversationModel.findByIdAndUpdate(convo_id, {
+    latestMessage: msg,
+  });
+  return updatedConvo;
+};
+
