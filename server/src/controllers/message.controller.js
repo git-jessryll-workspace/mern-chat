@@ -1,6 +1,10 @@
 import logger from "../configs/logger.config.js";
 import { updateLatestMessage } from "../services/conversation.service.js";
-import { createMessage, populateMessage } from "../services/message.service.js";
+import {
+  createMessage,
+  getConvoMessages,
+  populateMessage,
+} from "../services/message.service.js";
 
 export const sendMessage = async (req, res, next) => {
   try {
@@ -22,14 +26,20 @@ export const sendMessage = async (req, res, next) => {
     let newMessage = await createMessage(msgData);
     let populatedMessage = await populateMessage(newMessage._id);
     await updateLatestMessage(convo_id, newMessage);
-    res.json(populatedMessage)
+    res.json(populatedMessage);
   } catch (error) {
     next(error);
   }
 };
 export const getMessages = async (req, res, next) => {
   try {
-    res.json("test");
+    const convo_id = req.params.convo_id;
+    if (!convo_id) {
+      logger.error("Please add a conversation id in params.");
+      res.sendStatus(400);
+    }
+    const messages = await getConvoMessages(convo_id);
+    res.json(messages);
   } catch (error) {
     next(error);
   }
