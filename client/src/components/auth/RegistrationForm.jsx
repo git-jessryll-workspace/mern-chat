@@ -32,12 +32,14 @@ export default function RegistrationForm() {
     let res;
     if (picture) {
       await uploadImage().then(async (upload_data) => {
-        res = await dispatch(registerUser({ ...data, picture: upload_data.secure_url }));
+        res = await dispatch(
+          registerUser({ ...data, picture: upload_data.secure_url })
+        );
       });
     } else {
       res = await dispatch(registerUser({ ...data, picture: "" }));
     }
-    if (res.payload.user) navigate("/");
+    if (res?.payload?.user) navigate("/");
   };
 
   const uploadImage = async () => {
