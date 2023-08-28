@@ -6,10 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import PulseLoader from "react-spinners/PulseLoader";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../features/userSlice";
+import { useState } from "react";
+import Picture from "./Picture";
+import axios from "axios";
+
+const { VITE_CLOUD_NAME, VITE_CLOUD_SECRET } = import.meta.env;
+
 export default function RegistrationForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status, error } = useSelector((state) => state.user);
+  const [picture, setPicture] = useState();
+  const [readablePicture, setReadablePicture] = useState("");
 
   const {
     register,
@@ -21,13 +29,30 @@ export default function RegistrationForm() {
   });
 
   const onSubmit = async (data) => {
-    await setTimeout(() => {}, 4000);
-    let res = await dispatch(registerUser({ ...data, picture: "" }));
+    let res;
+    if (picture) {
+      await uploadImage().then(async (upload_data) => {
+        res = await dispatch(registerUser({ ...data, picture: upload_data.secure_url }));
+      });
+    } else {
+      res = await dispatch(registerUser({ ...data, picture: "" }));
+    }
     if (res.payload.user) navigate("/");
   };
 
+  const uploadImage = async () => {
+    let formData = new FormData();
+    formData.append("upload_preset", VITE_CLOUD_SECRET);
+    formData.append("file", picture);
+    const { data } = await axios.post(
+      `https://api.cloudinary.com/v1_1/${VITE_CLOUD_NAME}/image/upload`,
+      formData
+    );
+    return data;
+  };
+
   return (
-    <div className="h-screen w-full flex items-center justify-center overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="w-full max-w-md space-y-8 p-10 dark:bg-dark_bg_2 rounded-xl">
         <div className="text-center dark:text-dark_text_1">
           <h2 className="mt-6 text-3xl font-bold">Welcome</h2>
@@ -47,7 +72,7 @@ export default function RegistrationForm() {
           <AuthInput
             name="status"
             type="text"
-            placeholder="Status"
+            placeholder="Status (Optional)"
             register={register}
             error={errors?.status?.message}
           />
@@ -65,6 +90,11 @@ export default function RegistrationForm() {
             register={register}
             error={errors?.password?.message}
           />
+          <Picture
+            readablePicture={readablePicture}
+            setReadablePicture={setReadablePicture}
+            setPicture={setPicture}
+          />
           {error && (
             <div>
               <p className="text-red-400">{error}</p>
@@ -74,7 +104,7 @@ export default function RegistrationForm() {
             className="w-full flex justify-center bg-green_1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green_2 shadow-lg cursor-pointer transition ease-in duration-300"
             type="submit"
           >
-            {status !== "loading" ? (
+            {status === "loading" ? (
               <PulseLoader color="#fff" size={12} />
             ) : (
               "Sign up"
