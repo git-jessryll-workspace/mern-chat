@@ -36,6 +36,7 @@ export default function Conversation({ convo }) {
           <span>{moment(convo.latestMessage.createdAt).fromNow(true)}</span>
         </div>
       </div>
+      <div className="ml-16 border-b border-b-dark_border_1"></div>
     </li>
   );
 }
