@@ -6,9 +6,11 @@ import { getConversations } from "../features/chatSlice";
 export default function () {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const { conversations } = useSelector((state) => state.chat);
+  
   useEffect(() => {
-    if (user) {
-      dispatch(getConversations(user.access_token));
+    if (user) {   
+      dispatch(getConversations(user.token));
     }
   }, [user]);
   return (

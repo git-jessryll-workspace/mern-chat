@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 const CONVERSATION_ENDPOINT = `${
   import.meta.env.VITE_API_ENDPOINT
 }/conversation`;
@@ -39,6 +40,7 @@ export const chatSlice = createSlice({
       })
       .addCase(getConversations.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.error = "";
         state.conversations = action.payload;
       })
       .addCase(getConversations.rejected, (state, action) => {

@@ -25,6 +25,10 @@
   .input {
     @apply w-full dark:bg-dark_bg_2 p-1.5 dark:text-dark_text_1 rounded-lg flex-1 outline-none;
   }
+  .convos {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
 }
 
 .rotateAnimation {
@@ -35,4 +39,14 @@
   0% {
     transform: rotate(-90deg);
   }
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #444e54;
 }
