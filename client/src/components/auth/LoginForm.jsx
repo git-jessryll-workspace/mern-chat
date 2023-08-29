@@ -25,6 +25,7 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     
     let res = await dispatch(loginUser({...data}));
+    console.log(res)
     if (res?.payload?.user) navigate("/");
   };
 
