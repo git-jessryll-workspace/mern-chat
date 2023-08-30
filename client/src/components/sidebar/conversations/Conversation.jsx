@@ -33,7 +33,7 @@ export default function Conversation({ convo }) {
           <span className="dark:text-dark_text_2">
             {dateHandler(convo.latestMessage?.createdAt)}
           </span>
-          <span>{moment(convo.latestMessage.createdAt).fromNow(true)}</span>
+          {/* <span>{moment(convo.latestMessage.createdAt).fromNow(true)}</span> */}
         </div>
       </div>
       <div className="ml-16 border-b border-b-dark_border_1"></div>
