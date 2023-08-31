@@ -18,7 +18,7 @@ export default function Sidebar() {
         searchLength={searchResults.length}
         setSearchResults={setSearchResults}
       />
-      {searchResults.length > 0 ? <SearchResults searchResults={searchResults} /> : <Conversations />}
+      {searchResults.length > 0 ? <SearchResults searchResults={searchResults} setSearchResults={setSearchResults}/> : <Conversations />}
     </div>
   );
 }
