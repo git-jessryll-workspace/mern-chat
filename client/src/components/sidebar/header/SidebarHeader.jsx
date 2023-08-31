@@ -6,7 +6,7 @@ export default function SidebarHeader() {
   const { user } = useSelector((state) => state.user);
   const [showMenu, setShowMenu] = useState(false);
   return (
-    <div className="h-[50px] dark:bg-dark_bg_2 flex items-center p16">
+    <div className="h-[59px] dark:bg-dark_bg_2 flex items-center p16">
       <div className="w-full flex items-center justify-between">
         <button className="btn">
           <img

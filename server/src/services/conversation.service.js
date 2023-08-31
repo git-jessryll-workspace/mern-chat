@@ -2,6 +2,7 @@ import createHttpError from "http-errors";
 import { ConversationModel, UserModel } from "../models/index.js";
 
 export const doesConversationExist = async (sender_id, receiver_id) => {
+  
   let convos = await ConversationModel.find({
     isGroup: false,
     $and: [
@@ -20,8 +21,7 @@ export const doesConversationExist = async (sender_id, receiver_id) => {
     throw createHttpError.BadRequest("Oops... Something went wrong!");
 
   // populate message model
-
-  let convo = await UserModel.populate(convos, {
+  convos = await UserModel.populate(convos, {
     path: "latestMessage.sender",
     select: "name email picture status",
   });

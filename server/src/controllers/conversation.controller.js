@@ -7,6 +7,8 @@ export const create_open_conversation = async (req, res, next) => {
   try {
     const sender_id = req.user.userId;
     const { receiver_id } = req.body;
+
+    console.log(receiver_id, 'receiver')
     if (!receiver_id) {
       logger.error(
         "please provide the user id you wanna start a conversation with."
@@ -20,8 +22,9 @@ export const create_open_conversation = async (req, res, next) => {
       receiver_id
     );
 
+    
     if (existed_conversation) {
-        res.json(existed_conversation)
+        res.status(200).json(existed_conversation)
     } else {
         let receiver_user = await findUser(receiver_id);
         let convoData = {
@@ -34,7 +37,6 @@ export const create_open_conversation = async (req, res, next) => {
         const populatedConvo = await populateConversation(newConvo._id, "users", "-password")
         res.status(200).json(populatedConvo)
     }
-    res.json(sender_id);
   } catch (error) {
     next(error);
   }
