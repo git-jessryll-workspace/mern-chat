@@ -6,9 +6,8 @@ import { Conversations } from "./conversations";
 
 export default function Sidebar() {
   const [searchResults, setSearchResults] = useState([]);
-  console.log(searchResults);
   return (
-    <div className="w-[40%] h-full select-none">
+    <div className="flex0030 w-[30%] h-full select-none">
       {/* Sidebar header */}
       <SidebarHeader />
       {/* notifications */}

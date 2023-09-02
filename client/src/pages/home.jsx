@@ -17,8 +17,8 @@ export default function () {
     }
   }, [user]);
   return (
-    <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center py-[19px] overflow-hidden">
-      <div className="container min-h-screen flex">
+    <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center pt-[19px] overflow-hidden">
+      <div className="container h-screen flex">
         <Sidebar />
         {activeConversation._id ? <ChatContainer/> : <WhatsappHome />}
       </div>
