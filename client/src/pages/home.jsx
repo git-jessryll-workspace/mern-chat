@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,23 +12,24 @@ function Home({ socket }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { activeConversation } = useSelector((state) => state.chat);
-
-  useEffect(() => {
-    if (user) {
-      socket.emit("join", user._id);
-      dispatch(getConversations(user.token));
-    }
-  }, [user]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   useEffect(() => {
     socket.on("receive message", (message) => {
       dispatch(updateMessagesAndConversations(message));
     });
+    socket.emit("join", user._id);
+      if (user) {
+        dispatch(getConversations(user.token));
+      }
+      socket.on('get-online-users', (userIds) => {
+        setOnlineUsers(userIds);
+      })
   });
   return (
     <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center pt-[19px] overflow-hidden">
       <div className="container h-screen flex">
-        <Sidebar />
-        {activeConversation._id ? <ChatContainer /> : <WhatsappHome />}
+        <Sidebar onlineUsers={onlineUsers}/>
+        {activeConversation._id ? <ChatContainer onlineUsers={onlineUsers}/> : <WhatsappHome />}
       </div>
     </div>
   );

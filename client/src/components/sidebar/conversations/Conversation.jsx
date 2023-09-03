@@ -8,7 +8,7 @@ import {
 } from "../../../utils/chat";
 import SocketContext from "../../../context/SocketContext";
 
-function Conversation({ convo, socket }) {
+function Conversation({ convo, socket, online }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { activeConversation } = useSelector((state) => state.chat);
@@ -20,7 +20,7 @@ function Conversation({ convo, socket }) {
     const newConvo = await dispatch(open_create_conversation(values));
     socket.emit("join conversation", newConvo.payload?._id);
   };
-
+console.log(online)
   return (
     <li
       onClick={openConversation}
@@ -32,7 +32,7 @@ function Conversation({ convo, socket }) {
     >
       <div className="relative w-full flex items-center justify-between py-[10px]">
         <div className="flex items-center gap-x-3">
-          <div className="relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden">
+          <div className={`relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden ${online && "online"}`}>
             <img
               src={
                 getConversationPicture(user, convo.users) ||

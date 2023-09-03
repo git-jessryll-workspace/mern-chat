@@ -99,7 +99,7 @@ export const chatSlice = createSlice({
     updateMessagesAndConversations: (state, action) => {
       let convo = state.activeConversation;
       if (convo._id === action.payload.conversation._id) {
-        state.messages = [...state.messages, action.payload]
+        state.messages = [...state.messages, action.payload];
       }
       let conversation = {
         ...action.payload.conversation,
@@ -110,7 +110,7 @@ export const chatSlice = createSlice({
       );
       newConvos.unshift(conversation);
       state.conversations = newConvos;
-    }
+    },
   },
   extraReducers(builder) {
     builder
