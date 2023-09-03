@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { sendMessage } from "../../../features/chatSlice";
 import { ClipLoader } from "react-spinners";
 import { Attachments } from "./attachments";
+import SocketContext from "../../../context/SocketContext";
 
-export default function ChatActions() {
+function ChatActions({socket}) {
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
@@ -21,7 +22,7 @@ export default function ChatActions() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await dispatch(
+    const newMessage = await dispatch(
       sendMessage({
         token,
         convo_id: activeConversation._id,
@@ -29,6 +30,7 @@ export default function ChatActions() {
         message,
       })
     );
+    socket.emit('send message', newMessage.payload)
     setLoading(false);
     setMessage("");
   };
@@ -65,3 +67,11 @@ export default function ChatActions() {
     </form>
   );
 }
+
+const ChatActionsWithContext = (props) => (
+  <SocketContext.Consumer>
+    {(socket) => <ChatActions {...props} socket={socket} />}
+  </SocketContext.Consumer>
+);
+
+export default ChatActionsWithContext;
