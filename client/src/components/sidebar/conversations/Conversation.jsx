@@ -8,7 +8,7 @@ import {
 } from "../../../utils/chat";
 import SocketContext from "../../../context/SocketContext";
 
-function Conversation({ convo, socket, online }) {
+function Conversation({ convo, socket, online, typing }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { activeConversation } = useSelector((state) => state.chat);
@@ -20,7 +20,6 @@ function Conversation({ convo, socket, online }) {
     const newConvo = await dispatch(open_create_conversation(values));
     socket.emit("join conversation", newConvo.payload?._id);
   };
-console.log(online)
   return (
     <li
       onClick={openConversation}
@@ -32,7 +31,11 @@ console.log(online)
     >
       <div className="relative w-full flex items-center justify-between py-[10px]">
         <div className="flex items-center gap-x-3">
-          <div className={`relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden ${online && "online"}`}>
+          <div
+            className={`relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden ${
+              online && "online"
+            }`}
+          >
             <img
               src={
                 getConversationPicture(user, convo.users) ||
@@ -49,11 +52,15 @@ console.log(online)
             <div>
               <div className="flex items-center gap-x-1 dark:text-dark_text_2">
                 <div className="flex-1 items-center gap-x-1 dark:text-dark_text_2 truncate">
-                  <p className="truncate">
-                    {convo.latestMessage?.message.length > 20
-                      ? `${convo.latestMessage?.message.substring(0, 20)}...`
-                      : convo.latestMessage?.message}
-                  </p>
+                  {typing === convo._id ? (
+                    "Typing..."
+                  ) : (
+                    <p className="truncate">
+                      {convo.latestMessage?.message.length > 20
+                        ? `${convo.latestMessage?.message.substring(0, 20)}...`
+                        : convo.latestMessage?.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

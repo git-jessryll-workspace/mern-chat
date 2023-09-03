@@ -4,7 +4,7 @@ import { Notifications } from "./notifications";
 import { Search, SearchResults } from "./search";
 import { Conversations } from "./conversations";
 
-export default function Sidebar({ onlineUsers }) {
+export default function Sidebar({ onlineUsers, typing }) {
   const [searchResults, setSearchResults] = useState([]);
   return (
     <div className="flex0030 w-[30%] h-full select-none">
@@ -23,7 +23,7 @@ export default function Sidebar({ onlineUsers }) {
           setSearchResults={setSearchResults}
         />
       ) : (
-        <Conversations onlineUsers={onlineUsers}/>
+        <Conversations onlineUsers={onlineUsers} typing={typing} />
       )}
     </div>
   );

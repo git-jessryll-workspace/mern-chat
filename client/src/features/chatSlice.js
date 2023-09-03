@@ -98,8 +98,10 @@ export const chatSlice = createSlice({
     },
     updateMessagesAndConversations: (state, action) => {
       let convo = state.activeConversation;
+      const message = state.messages.filter(i => i._id === action.payload._id);
+      if (message.length > 0) return state;
       if (convo._id === action.payload.conversation._id) {
-        state.messages = [...state.messages, action.payload];
+          state.messages = [...state.messages, action.payload];
       }
       let conversation = {
         ...action.payload.conversation,

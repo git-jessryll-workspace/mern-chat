@@ -19,7 +19,6 @@ export default function SocketServer(socket) {
 
   // send and receive message
   socket.on("send message", (message) => {
-    console.log(message);
     let conversation = message.conversation;
     if (!conversation.users) return;
 
@@ -27,5 +26,13 @@ export default function SocketServer(socket) {
       if (user._id === message.sender?._id) return;
       socket.in(user._id).emit("receive message", message);
     });
+  });
+
+  socket.on("typing", (conversation) => {
+    socket.broadcast.emit("typing-receive", conversation);
+  });
+
+  socket.on("stop typing", (conversation) => {
+    socket.broadcast.emit('stop typing', conversation)
   });
 }
