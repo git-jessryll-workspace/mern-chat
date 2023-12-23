@@ -7,6 +7,7 @@ import {
 } from "../features/chatSlice";
 import { ChatContainer, WhatsappHome } from "../components/chat";
 import SocketContext from "../context/SocketContext";
+import Call from "../components/chat/call/Call";
 
 function Home({ socket }) {
   const dispatch = useDispatch();
@@ -19,25 +20,23 @@ function Home({ socket }) {
       dispatch(getConversations(user.token));
     }
   }, [user]);
-  useEffect(()=>{
+  useEffect(() => {
     socket.emit("join", user._id);
     socket.on("get-online-users", (userIds) => {
       setOnlineUsers(userIds);
     });
-  }, [user])
+  }, [user]);
   useEffect(() => {
     socket.on("receive message", (message) => {
       dispatch(updateMessagesAndConversations(message));
     });
-    
   }, [activeConversation]);
   useEffect(() => {
     socket.on("typing-receive", (conversation) => {
       setTyping(conversation);
     });
     socket.on("stop typing", (conversation) => setTyping(false));
-  })
-  console.log('typing', typing)
+  });
   return (
     <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center pt-[19px] overflow-hidden">
       <div className="container h-screen flex">
@@ -48,6 +47,7 @@ function Home({ socket }) {
           <WhatsappHome />
         )}
       </div>
+      <Call />
     </div>
   );
 }
